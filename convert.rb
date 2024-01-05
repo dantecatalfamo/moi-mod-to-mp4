@@ -55,7 +55,7 @@ end
 
 if ARGV[0].nil?
   puts 'usage: convert.rb <directory>...'
-  puts '  Convert a directory full of MOI and MOD files into MP4 files with correct metadata'
+  puts '  Convert one or more directories full of MOI and MOD files into MP4 files with correct metadata'
   return
 end
 
