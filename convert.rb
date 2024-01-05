@@ -54,28 +54,30 @@ def parse_moi(filename)
 end
 
 if ARGV[0].nil?
-  puts 'usage: convert.rb <directory>'
+  puts 'usage: convert.rb <directory>...'
   puts '  Convert a directory full of MOI and MOD files into MP4 files with correct metadata'
   return
 end
 
-moi_files = Dir[File.join(ARGV[0], '*.MOI')]
+ARGV.each do |dir|
+  moi_files = Dir[File.join(dir, '*.MOI')]
 
-moi_files.each do |moi|
-  data = parse_moi(moi)
-  puts "#{moi}: #{data}"
-  mod = moi.sub(/MOI$/, 'MOD')
-  raise "Video file doesn't exist: #{mod}" unless File.exist?(mod)
+  moi_files.each do |moi|
+    data = parse_moi(moi)
+    puts "#{moi}: #{data}"
+    mod = moi.sub(/MOI$/, 'MOD')
+    raise "Video file doesn't exist: #{mod}" unless File.exist?(mod)
 
-  mp4 = moi.sub(/MOI$/, 'mp4')
-  if File.exist?(mp4)
-    puts "#{mp4} already exists, skipping"
-    next
+    mp4 = moi.sub(/MOI$/, 'mp4')
+    if File.exist?(mp4)
+      puts "#{mp4} already exists, skipping"
+      next
+    end
+
+    ffmpeg = "ffmpeg -i \"#{mod}\" -vcodec copy -acodec aac -metadata \"creation_time=#{data[:year]}-#{data[:month]}-#{data[:day]} #{data[:hour]}:#{data[:minutes]}:#{data[:seconds]}Z\" \"#{mp4}\""
+    touch = "TZ=UTC touch -t #{data[:year]}#{data[:month]}#{data[:day]}#{data[:hour]}#{data[:minutes]}.#{data[:seconds]} \"#{mp4}\""
+
+    system(ffmpeg)
+    system(touch)
   end
-
-  ffmpeg = "ffmpeg -i \"#{mod}\" -vcodec copy -acodec aac -metadata \"creation_time=#{data[:year]}-#{data[:month]}-#{data[:day]} #{data[:hour]}:#{data[:minutes]}:#{data[:seconds]}Z\" \"#{mp4}\""
-  touch = "TZ=UTC touch -t #{data[:year]}#{data[:month]}#{data[:day]}#{data[:hour]}#{data[:minutes]}.#{data[:seconds]} \"#{mp4}\""
-
-  system(ffmpeg)
-  system(touch)
 end
