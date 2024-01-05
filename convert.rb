@@ -53,7 +53,7 @@ def parse_moi(filename)
   }
 end
 
-if ARGV.empty?
+if ARGV.empty? || ['-h', '--help'].include?(ARGV[0])
   puts 'usage: convert.rb <directory>...'
   puts '  Convert one or more directories full of MOI and MOD files into MP4 files with correct metadata'
   return
