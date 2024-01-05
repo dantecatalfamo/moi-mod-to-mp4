@@ -15,25 +15,6 @@ def parse_moi(filename)
   milliseconds = data[0xc..0xd].unpack1('S>')
   seconds = milliseconds / 1000
 
-  # We don't need the rest, ignore it
-  #
-  # duration_ms = data[0xe..0x11].unpack1('L>')
-  # duration_s = duration_ms / 1000
-  # aspect_ratio = data[0x80..0x83][0] # Don't care
-  # audio_codec_bits = data[0x84..0x85]
-  # audio_codec = if audio_codec_bits == "\x00\xC1"
-  #                 'AC3'
-  #               elsif audio_codec_bits == "\x40\x01"
-  #                 'MPEG'
-  #               else
-  #                 "Unknown #{audio_codec_bits.unpack('C*').map { |x| x.to_s(16) }.join(' ')}"
-  #               end
-  # puts "Audio Codec: #{audio_codec}"
-  # The method for calculating this on wikipedia seems to be wrong
-  # audio_bitrate_bits = data[0x86].unpack1('C')
-  # audio_bitrate = 64 + (audio_bitrate_bits - 1) * 16
-  # puts "Audio Bitrate: #{audio_bitrate}kbit/s (#{audio_bitrate_bits.to_s(16)})"
-
   {
     version: version,
     size: size,
@@ -43,13 +24,6 @@ def parse_moi(filename)
     hour: hour.to_s.rjust(2, '0'),
     minutes: minutes.to_s.rjust(2, '0'),
     seconds: seconds.to_s.rjust(2, '0')
-
-    # Not needed
-    #
-    # milliseconds: milliseconds,
-    # duration_ms: duration_ms,
-    # duration_s: duration_s,
-    # audio_codec: audio_codec
   }
 end
 
